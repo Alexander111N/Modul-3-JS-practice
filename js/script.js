@@ -114,12 +114,15 @@ const connectUsBtns = document.querySelectorAll('[data-modal]');
 const closeModal = document.querySelector('[data-close]');
 const modalWindow = document.querySelector('.modal');
 
+function openModal() {
+    modalWindow.classList.add('show');
+    modalWindow.classList.remove('hide');
+    document.body.style.overflow = 'hidden';
+    clearTimeout(openModaltimer);
+}
+
 connectUsBtns.forEach(item => {
-    item.addEventListener('click', () => {
-        modalWindow.classList.add('show');
-        modalWindow.classList.remove('hide');
-        document.body.style.overflow = 'hidden';
-    });
+    item.addEventListener('click', openModal);
 });
 
 function closeModalWindow() {
@@ -136,9 +139,19 @@ modalWindow.addEventListener('click', (e) => {
     }
 });
 
-
 document.addEventListener('keydown', (e) => {
     if(e.code === "Escape" && modalWindow.classList.contains('show')){ 
         closeModalWindow();
     }
 });
+
+const openModaltimer = setTimeout(openModal, 5000);
+
+function openModalByScroll() {
+    if(document.documentElement.clientHeight + window.pageYOffset >= document.documentElement.scrollHeight){
+        openModal();
+        window.removeEventListener('scroll', openModalByScroll);
+    }
+}
+
+window.addEventListener('scroll', openModalByScroll);
