@@ -49,7 +49,7 @@ showTabContent(0);
 
 // Timer
 
-const deadline = '2022-05-19';
+const deadline = '2022-09-19';
 
 function getTimeRemaining(endtime) {
     let days, hours, minutes, seconds;
@@ -90,11 +90,12 @@ function setClock(selector, endtime) {
           hours = timer.querySelector('#hours'),
           minutes = timer.querySelector('#minutes'),
           seconds = timer.querySelector('#seconds');
+          const interval = setInterval(updateClock, 1000);
 
-    updateClock();
-    const interval = setInterval(updateClock, 1000);     
+    updateClock();  // Наш setInterval запустится только через секунду и значит целую секунду будут висеть
+                    // неправильные данные. Это не красиво. Чтобы этого избежать вызовем обновление таймера сразу.
 
-    function updateClock(){
+    function updateClock(){                     // обновляет наш таймер каждую секунду
         const t = getTimeRemaining(endtime);
         days.textContent = addZero(t.days);
         hours.textContent = addZero(t.hours);
@@ -117,7 +118,7 @@ const modalWindow = document.querySelector('.modal');
 function openModal() {
     modalWindow.classList.add('show');
     modalWindow.classList.remove('hide');
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';   // стиль overflow не позволяет прокручивать страницу за модальным окном
     clearTimeout(openModaltimer);
 }
 
@@ -128,14 +129,14 @@ connectUsBtns.forEach(item => {
 function closeModalWindow() {
     modalWindow.classList.add('hide');
     modalWindow.classList.remove('show');
-    document.body.style.overflow = '';
+    document.body.style.overflow = '';      // Включаем прокрутку. Снова можем прокручивать страницу
 }
 
 closeModal.addEventListener('click', closeModalWindow);
 
 modalWindow.addEventListener('click', (e) => {
-    if(e.target === modalWindow) {
-        closeModalWindow();
+    if(e.target === modalWindow) {              // Блок модального окна занимает весь экран, но мы его не видиv
+        closeModalWindow();                     // когда попадаем в часть без контента оно закрывается. Читай свой ворд документ
     }
 });
 
