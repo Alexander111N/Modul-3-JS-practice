@@ -146,7 +146,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-const openModaltimer = setTimeout(openModal, 5000);
+//const openModaltimer = setTimeout(openModal, 5000); // Открывыает мадальное окно "Связаться с нами" через 5 секунд
 
 function openModalByScroll() {
     if(document.documentElement.clientHeight + window.pageYOffset >= document.documentElement.scrollHeight){
@@ -156,3 +156,50 @@ function openModalByScroll() {
 }
 
 window.addEventListener('scroll', openModalByScroll);
+
+//Создание классов (шаблонов для карточек меню). 79 пункт курса.
+
+class MenuCard {
+    constructor(src, alt, title, discr, price, parent, ...classes){ // в ...classes передаются классы, которые мы хотим добавить к карточке. для каждой карточки может быть разное количество классов.
+        this.src = src;
+        this.alt = alt;
+        this.title = title;
+        this.discr = discr;
+        this.price = price;
+        this.parent = document.querySelector(parent);
+        this.classes = classes;
+    }
+
+    render(){
+        const element = document.createElement('div');
+        if(this.classes.length === 0){
+            this.element = 'menu__item';
+            element.classList.add(this.element);
+        }
+        else{
+            this.classes.forEach(className => element.classList.add(className));
+        }
+
+        element.innerHTML = `
+            <img src=${this.src} alt=${this.alt}>
+            <h3 class="menu__item-subtitle">${this.title}</h3>
+            <div class="menu__item-descr">${this.discr}</div>
+            <div class="menu__item-divider"></div>
+            <div class="menu__item-price">
+                <div class="menu__item-cost">Цена:</div>
+                <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+            </div>
+        `;
+        this.parent.append(element);
+    }
+}
+
+new MenuCard(            // создал карточку для проверки.преподаватель удалял все карточки из html и сделал их через объекты класса. я пока так не сделал.
+    "img/tabs/vegy.jpg",
+    "vegy",
+    'Меню "Фитнес"',
+    '11Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+    560,
+    '.menu .container',
+    // тут параметры для передачи в ...classes
+).render();
