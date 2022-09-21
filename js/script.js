@@ -201,34 +201,6 @@ document.addEventListener('DOMContentLoaded',() => {
         // тут параметры для передачи в ...classes
     ).render();
 
-
-    //{"name":"Alex","tel":"334345"}
-    //console.log(JSON.stringify(b));  // undefined потому что не запущен сервер??
-
-
-    // 'use strict'
-
-    // const inputRub = document.querySelector('#rub');
-    // const inputUsd = document.querySelector('#usd');
-
-    // inputRub.addEventListener('input', () =>{
-    //     const request = new XMLHttpRequest(); 
-
-    //     request.open();
-    //     request.setRequestHeader('Content-type', '’application/json; charset- utf-8'); // проверит ьправильность ввода если ошибка
-    //     request.send();
-
-    //     request.addEventListener('readystatechange', () =>{
-    //         if(request.readyState === 4 && request.status === 200){
-    //             console.log(request.response);
-    //         } else{
-    //             inputUsd.value = 'Что-то пошло не так!';
-    //         }
-    //     });
-
-    //     //status
-    // });
-
     //Forms.  отправка данных на сервер
 
     const forms = document.querySelectorAll('form');
@@ -289,9 +261,6 @@ document.addEventListener('DOMContentLoaded',() => {
                 form.reset(); //  очистка данных формы
             });
 
-
-
-
             // request.addEventListener('load',() =>{   // это код был нужен для new XMLHttpRequest()
             //     if(request.status == 200){
             //         console.log(request.response);
@@ -302,9 +271,6 @@ document.addEventListener('DOMContentLoaded',() => {
             //         showThankModal(message.failure);
             //     }
             // })
-
-
-
 
         });
     }
@@ -332,5 +298,8 @@ document.addEventListener('DOMContentLoaded',() => {
         }, 3000);
     }
 
+    fetch('http://localhost:3000/menu')
+        .then(data => data.json())
+        .then(res => console.log(res));
 
 });
