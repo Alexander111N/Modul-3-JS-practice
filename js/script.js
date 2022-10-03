@@ -200,12 +200,20 @@ document.addEventListener('DOMContentLoaded',() => {
         return await res.json(); // эта строка тоже возвращает промис так как потом мы ее обрабатываем при помощи then
     }
 
-    getResource('http://localhost:3000/menu')
+    // getResource('http://localhost:3000/menu')
+    // .then(data => {
+    //     data.forEach(({img, altimg, title, descr, price}) => {
+    //         new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+    //     });
+    // });
+
+    axios.get('http://localhost:3000/menu') // библиотека axios
     .then(data => {
-        data.forEach(({img, altimg, title, descr, price}) => {
+        data.data.forEach(({img, altimg, title, descr, price}) => {
             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
         });
     });
+
 
     // let b = new MenuCard(            // создал карточку для проверки.преподаватель удалял все карточки из html и сделал их через объекты класса. я пока так не сделал.
     //     "img/tabs/vegy.jpg",
