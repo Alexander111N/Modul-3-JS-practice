@@ -170,8 +170,8 @@ document.addEventListener('DOMContentLoaded',() => {
         render(){
             const element = document.createElement('div');
             if(this.classes.length === 0){
-                this.element = 'menu__item';
-                element.classList.add(this.element);
+                this.element = 'menu__item';        // создаем дополнительное свойство у объекта this
+                element.classList.add(this.element);  // помещаем это дополнительное свойство в const element.  Это два разных element
             }
             else{
                 this.classes.forEach(className => element.classList.add(className));
@@ -191,15 +191,31 @@ document.addEventListener('DOMContentLoaded',() => {
         }
     }
 
-    let b = new MenuCard(            // создал карточку для проверки.преподаватель удалял все карточки из html и сделал их через объекты класса. я пока так не сделал.
-        "img/tabs/vegy.jpg",
-        "vegy",
-        'Меню "Фитнес"',
-        '11Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-        560,
-        '.menu .container',
-        // тут параметры для передачи в ...classes
-    ).render();
+    const getResource = async (url) => {    // отдельный метод для запроса на сервер
+        const res = await fetch(url);
+        if(!res.ok){  // так делаем потому что ошибка 404 для fetch не является ошиькой и он не попадет в метод catch
+            throw new Error(`Ошибка получения данных с сервера ${url}, status: ${res.status}`); 
+        }
+
+        return await res.json(); // эта строка тоже возвращает промис так как потом мы ее обрабатываем при помощи then
+    }
+
+    getResource('http://localhost:3000/menu')
+    .then(data => {
+        data.forEach(({img, altimg, title, descr, price}) => {
+            new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+        });
+    });
+
+    // let b = new MenuCard(            // создал карточку для проверки.преподаватель удалял все карточки из html и сделал их через объекты класса. я пока так не сделал.
+    //     "img/tabs/vegy.jpg",
+    //     "vegy",
+    //     'Меню "Фитнес"',
+    //     '11Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+    //     560,
+    //     '.menu .container',
+    //     // тут параметры для передачи в ...classes
+    // ).render();
 
     //Forms.  отправка данных на сервер
 
@@ -212,12 +228,22 @@ document.addEventListener('DOMContentLoaded',() => {
     } 
 
     forms.forEach(item=> {
-        postData(item);
+        bindPostData(item);
     });
 
-    function postData(form){
+    const postData = async (url, data) => {    // отдельный метод для запроса на сервер
+        const res = await fetch(url, {
+            method: "POST",
+            headers:{'Content-type': 'application/json'}, // эта строчка нужна для json, для formData не нужна
+            body: data
+        });
+
+        return await res.json(); // эта строка тоже возвращает промис так как потом мы ее обрабатываем при помощи then
+    }
+
+    function bindPostData(form){
         form.addEventListener('submit', (e) => {
-            e.preventDefault(); // отменяет стандартноеповедение браузера. В данном случаеотменяет перезагрузку страницы при отправке формы.
+            e.preventDefault(); // отменяет стандартное поведение браузера. В данном случаеотменяет перезагрузку страницы при отправке формы.
 
             const statusMessage = document.createElement('img');
             statusMessage.src = message.loading;
@@ -237,7 +263,7 @@ document.addEventListener('DOMContentLoaded',() => {
             // если мы хотим отправить данные в формате json мы должны взаимодействовать с объектом FormData.
             // переберем formData и поместим информацию в новый объект
             const object = {};
-            formData.forEach(function(value,key){
+            formData.forEach(function(value,key){      // весь этот код может быть заменен на object = Object.fromEntries(formData.entries())
                 object[key] = value;
             });
             const json = JSON.stringify(object); // конвертируем object к формату json. Объект new FormData нельзя было так конвертировать. Это особый объект.
@@ -246,11 +272,7 @@ document.addEventListener('DOMContentLoaded',() => {
             //request.send(formData); // для отправки обычнго формата FormData
             //request.send(json); // для отправки json формата
 
-            fetch('server.php', {
-                method: "POST",
-                headers:{'Content-type': 'application/json'}, // эта строчка нужна для json, для formData не нужна
-                body: json
-            }).then(data => data.text())
+            postData('http://localhost:3000/requests', json)
             .then(data => {
                 console.log(data);
                 showThankModal(message.success);
