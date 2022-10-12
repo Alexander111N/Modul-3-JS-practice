@@ -391,10 +391,10 @@ document.addEventListener('DOMContentLoaded',() => {
     });
 
     nextSlide.addEventListener('click', () => {
-        if(offset == +width.slice(0, width.length - 2) * (slides.length - 1) ){
+        if(offset == +width.replace(/\D/g, '') * (slides.length - 1) ){
             offset = 0;
         } else {
-            offset += +width.slice(0, width.length - 2);
+            offset += +width.replace(/\D/g, '');
         }
 
         slidesField.style.transform = `translateX(-${offset}px)`;
@@ -410,9 +410,9 @@ document.addEventListener('DOMContentLoaded',() => {
 
     prevSlide.addEventListener('click', () => {
         if(offset == 0 ){
-            offset = +width.slice(0, width.length - 2) * (slides.length - 1);
+            offset = +width.replace(/\D/g, '') * (slides.length - 1);
         } else {
-            offset -= +width.slice(0, width.length - 2);
+            offset -= +width.replace(/\D/g, '');
         }
 
         slidesField.style.transform = `translateX(-${offset}px)`;
@@ -481,7 +481,7 @@ document.addEventListener('DOMContentLoaded',() => {
         dot.addEventListener('click', (e) =>{
             slideIndex = e.target.getAttribute('data-slide-to');
 
-            offset = +width.slice(0, width.length - 2) * (slideIndex - 1); // расчитываем смещение
+            offset = +width.replace(/\D/g, '') * (slideIndex - 1); // расчитываем смещение
             slidesField.style.transform = `translateX(-${offset}px)`; // выставялем смещение
 
             currentSlider.textContent = addZero(slideIndex); // изменение индекса слайда
