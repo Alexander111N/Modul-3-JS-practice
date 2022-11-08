@@ -43,7 +43,7 @@ function cards(){
         data.forEach(({img, altimg, title, descr, price}) => {
             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
         });
-    });s
+    });
 }
 
 export default cards;
